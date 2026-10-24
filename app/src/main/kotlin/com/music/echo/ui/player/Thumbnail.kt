@@ -658,12 +658,25 @@ private fun ThumbnailItem(
       if (hidePlayerThumbnail) {
         HiddenThumbnailPlaceholder(textBackgroundColor = textBackgroundColor)
       } else {
-        val artworkUriToUse =
-          if (item.mediaId == currentMediaId && !currentMediaThumbnail.isNullOrBlank()) {
-            currentMediaThumbnail
-          } else {
-            item.mediaMetadata.artworkUri?.toString()
+        var spotifyArtworkUrl by remember(item.mediaId) { mutableStateOf<String?>(null) }
+        LaunchedEffect(item.mediaId) {
+          val title = item.mediaMetadata.title?.toString() ?: ""
+          val artist = item.mediaMetadata.artist?.toString() ?: ""
+          if (title.isNotBlank()) {
+            val spotifyArt = echo.music.iad1tya.spotify.SpotifyArtworkProvider.getArtworkUrl(context, title, artist)
+            if (!spotifyArt.isNullOrBlank()) {
+              spotifyArtworkUrl = spotifyArt
+            }
           }
+        }
+
+        val artworkUriToUse =
+          spotifyArtworkUrl
+            ?: if (item.mediaId == currentMediaId && !currentMediaThumbnail.isNullOrBlank()) {
+              currentMediaThumbnail
+            } else {
+              item.mediaMetadata.artworkUri?.toString()
+            }
 
         ThumbnailImage(artworkUri = artworkUriToUse?.resize(1200, 1200), cropArtwork = cropAlbumArt)
       }

@@ -25,6 +25,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -1278,14 +1279,23 @@ class MainActivity : ComponentActivity() {
                 Row {
                   TopAppBar(
                     title = {
-                      Text(
-                        text = currentTitle,
-                        style =
-                          MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp
-                          ),
-                      )
+                      if (navBackStackEntry?.destination?.route == Screens.Home.route) {
+                        Image(
+                          painter = painterResource(R.drawable.apple_music_logo),
+                          contentDescription = "Apple Music",
+                          modifier = Modifier.height(28.dp),
+                          colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                        )
+                      } else {
+                        Text(
+                          text = currentTitle,
+                          style =
+                            MaterialTheme.typography.titleLarge.copy(
+                              fontWeight = FontWeight.Bold,
+                              fontSize = 24.sp
+                            ),
+                        )
+                      }
                     },
                     actions = {
                       if (showHistoryButton) {
